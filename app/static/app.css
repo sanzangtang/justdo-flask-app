@@ -1,0 +1,37 @@
+.input-group {
+  margin-bottom: 0px;
+}
+
+.input-group-addon {
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.input-group .form-control {
+  box-shadow: none;
+  border: none;
+  font-size: 1.1em;
+}
+
+.input-group-btn#delete {
+  padding-left: 5px;
+}
+
+.input-group-btn#saved {
+  color: green;
+}
+
+.input-group-btn#delete:hover {
+  color: red;
+  cursor: pointer;
+}
+
+.input-group-addon {
+  padding: 0px;
+  border: none;
+  border-radius: 0px;
+}
+
+.list-group .list-group-item span {
+  font-size: 0.9em;
+  color: #607D8B;
+}

@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="{{url_for('static', filename='app.css')}}">
+<script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+{{moment.include_moment()}}
+<script src="{{url_for('static', filename='app.js')}}"></script>
+{% endblock %}
+
+{% block custom_content %}
+<div class="container">
+  <h1>Dashboard</h1>
+  <h4>Hello, {{current_user.username}}!
+    <a href="{{url_for('bp_user.logout')}}" class="btn btn-warning btn-xs">Logout</a></h4>
+</div>
+
+<div class="container">
+  {% for error in form.task.errors %} {% if error %}
+  <p class="help-block">{{error}}</p>
+  {% endif %} {% endfor %}
+  <div class="row">
+    <div class="col-xs-9 col-sm-8 col-md-6">
+      <form class="" action="" method="post">
+        {{form.hidden_tag()}}
+        <div class="form-group">
+          {{form.task(class="form-control", size=40)}}
+        </div>
+    </div>
+    <div class="col-xs-3 col-sm-2 col-md-2" style="padding-left: 0px;">
+      {{form.submit(class="btn btn-default", style="width:100%; max-width:80px")}}
+    </div>
+    </form>
+  </div>
+</div>
+
+<div class="container">
+  
+  <div class="row">
+    <div class="col-sm-12 col-md-8">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">My To-Do List</h3>
+        </div>
+
+        <div class="panel-body">
+
+          {% for todo in todolist %}
+          <ul class="list-group">
+
+            <li class="list-group-item">
+              <div class="input-group" id="todo{{todo.id}}">
+                <span class="input-group-addon">
+                  {% if todo.status == 'complete' %}
+                    <input type="checkbox" class="todo-checkbox" checked>
+                  {% else %}
+                    <input type="checkbox" class="todo-checkbox">
+                  {% endif %}
+                </span>
+                {% if todo.status == 'complete' %}
+                  <input type="text" class="form-control" style="text-decoration: line-through;" value="{{todo.task}}">
+                {% else %}
+                  <input type="text" class="form-control" value="{{todo.task}}">
+                {% endif %}
+                <span class="input-group-btn" id="saved"></span>
+                <span class="input-group-btn" id="delete"></span>
+              </div>
+            </li>
+
+            <li class="list-group-item">
+              {{moment(todo.timestamp).format('ddd, MMM D, YYYY h:m A')}}
+              <br>
+              {{moment(todo.timestamp).fromNow()}}
+            </li>
+          </ul>
+          {% endfor %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
