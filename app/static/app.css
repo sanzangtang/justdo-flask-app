@@ -35,3 +35,24 @@
   font-size: 0.9em;
   color: #607D8B;
 }
+
+.list-group-item {
+  border: none;
+}
+
+.list-group-item#todo-info {
+  border: none;
+  border-radius: 0px;
+  border-bottom: 1px solid #ddd;
+  padding-top: 0px;
+}
+
+.pager {
+  margin: 0px;
+  text-align: right;
+}
+
+.pager li#page-info {
+  float: left;
+  padding-top: 10px;
+}

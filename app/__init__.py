@@ -8,7 +8,7 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_moment import Moment
 
-# /Users/yukuan/Mega/justdo/app
+# /justdo/app
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__,
