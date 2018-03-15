@@ -1,0 +1,83 @@
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-8">
+      <!-- Panel div -->
+      <div class="panel panel-default">
+        <!-- Panel head -->
+        <div class="panel-heading">
+          <h3 class="panel-title">My To-Do List</h3>
+          <nav aria-label="...">
+            <ul class="pager">
+              <li id='page-info'>Page {{page}} of {{total_pages}}</li>
+              <li><a href="{{prev_url}}">
+                &laquo;
+              </a></li>
+              <li><a href="{{next_url}}">
+                &raquo;
+              </a></li>
+              <li>
+                <a role="button" data-toggle="collapse" href="#todolist-collapse">-</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <!-- Panel collapse -->
+        <div id="todolist-collapse" class="panel-collapse collapse in">
+          <!-- Panel body -->
+          <div class="panel-body">
+            <!-- ToDo add form -->
+            <ul class="list-group" id="todo-form">
+              <li class="list-group-item">
+                {% for error in form.task.errors %} {% if error %}
+                <p class="help-block">{{error}}</p>
+                {% endif %} {% endfor %}
+                <div class="row">
+                  <div class="col-xs-9 col-sm-10 col-md-10">
+                    <form class="" action="" method="post">
+                      {{form.hidden_tag()}}
+                      <div class="form-group">
+                        {{form.task(class="form-control", size=40)}}
+                      </div>
+                  </div>
+                  <div class="col-xs-3 col-sm-2 col-md-2" style="padding-left: 0px;">
+                    {{form.submit(class="btn btn-success", style="width:100%;")}}
+                  </div>
+                  </form>
+                </div>
+              </li>
+            </ul>
+
+            <!-- ToDo list -->
+            {% for todo in todolist %}
+            <ul class="list-group">
+              <li class="list-group-item">
+                <div class="input-group" id="todo{{todo.id}}">
+                  <span class="input-group-addon">
+                    {% if todo.status == 'complete' %}
+                      <input type="checkbox" class="todo-checkbox" checked>
+                    {% else %}
+                      <input type="checkbox" class="todo-checkbox">
+                    {% endif %}
+                  </span> {% if todo.status == 'complete' %}
+                  <input type="text" class="form-control" style="text-decoration: line-through;" value="{{todo.task}}"> {% else %}
+                  <input type="text" class="form-control" value="{{todo.task}}"> {% endif %}
+                  <span class="input-group-btn" id="saved"></span>
+                  <span class="input-group-btn" id="delete"></span>
+                </div>
+              </li>
+              <li class="list-group-item" id="todo-info">
+                {{moment(todo.timestamp).format('ddd, MMM D, YYYY h:m A')}}
+                <br> {{moment(todo.timestamp).fromNow()}}
+              </li>
+            </ul>
+            {% endfor %}
+
+          </div>
+          <!-- Panel body end -->
+        </div>
+        <!-- Panel collapse end -->
+      </div>
+      <!-- Panel end -->
+    </div>
+  </div>
+</div>

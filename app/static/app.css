@@ -31,6 +31,10 @@
   border-radius: 0px;
 }
 
+.list-group#todo-form {
+  margin-bottom: 0px;
+}
+
 .list-group .list-group-item span {
   font-size: 0.9em;
   color: #607D8B;
@@ -55,4 +59,12 @@
 .pager li#page-info {
   float: left;
   padding-top: 10px;
+}
+
+.pager li>a:focus {
+  background-color: #fff;
+}
+
+.pager li>a:hover {
+  background-color: #eee;
 }
