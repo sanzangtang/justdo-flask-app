@@ -16,13 +16,29 @@
   padding-left: 5px;
 }
 
-.input-group-btn#saved {
-  color: green;
-}
-
 .input-group-btn#delete:hover {
   color: red;
   cursor: pointer;
+}
+
+/* daily check icon */
+
+.input-group-btn#check-checked {
+  color: #F57C00;
+  font-size: 1.1em;
+}
+
+.input-group-btn#check-unchecked {
+  font-size: 1.1em;
+}
+
+.input-group-btn#check-unchecked:hover {
+  color: #F57C00;
+  cursor: pointer;
+}
+
+.input-group-btn#saved {
+  color: green;
 }
 
 .input-group-addon {
@@ -31,11 +47,7 @@
   border-radius: 0px;
 }
 
-.list-group#todo-form {
-  margin-bottom: 0px;
-}
-
-.list-group#keepdo-form {
+.list-group#todo-form, .list-group#keepdo-form {
   margin-bottom: 0px;
 }
 
@@ -48,10 +60,14 @@
   border: none;
 }
 
-.list-group-item#todo-info {
+.list-group-item#todo-info, .list-group-item#keepdo-info {
   border: none;
   border-radius: 0px;
   border-bottom: 1px solid #ddd;
+  padding-top: 0px;
+}
+
+.list-group-item#checked-days-list {
   padding-top: 0px;
 }
 
@@ -67,4 +83,34 @@
 
 .pager li>a:focus, .pager li>a:hover {
   background-color: #fff;
+}
+
+/* keepdolist days grid */
+
+.grid {
+  background-color: #ebedf0;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin-right: -2px;
+}
+
+/* different colors for one, seven and thrity days */
+
+#one-day {
+  background-color: #C5E1A5;
+}
+
+#seven-days {
+  background-color: #EF6C00;
+}
+
+#thirty-days {
+  background-color: #AB47BC;
+}
+
+#total-days {
+  color: white;
+  background-color: #BDBDBD;
+  margin-left: 5px;
 }

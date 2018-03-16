@@ -7,7 +7,7 @@
 
         <!-- Panel head -->
         <div class="panel-heading">
-          <h3 class="panel-title">My Keep-Do List</h3>
+          <h3 class="panel-title">My Keep-Do</h3>
           <nav aria-label="...">
             <ul class="pager">
               <li id='page-info'>Page {{keepdo_args.page}} of {{keepdo_args.total_pages}}</li>
@@ -29,6 +29,8 @@
 
           <!-- Panel body -->
           <div class="panel-body">
+
+            <!-- KeepDo form -->
             <ul class="list-group" id="keepdo-form">
               <li class="list-group-item">
                 <div class="row">
@@ -45,7 +47,60 @@
                   </form>
                 </div>
               </li>
+
+              <li class="list-group-item">
+                <div class="grid" id="one-day"></div>1 day
+                <div class="grid" id="seven-days"></div>7 days
+                <div class="grid" id="thirty-days"></div>30 days
+              </li>
             </ul>
+            <!-- KeepDo form end -->
+
+            <!-- KeepDo list content -->
+            {% for keepdo in keepdo_args.keepdolist %}
+            <ul class="list-group">
+              <li class="list-group-item">
+                <div class="input-group" id="keepdo{{keepdo.id}}">
+                  <span class="input-group-btn daily-check" id="check-unchecked">
+                    <i class="far fa-calendar-check"></i>
+                  </span>
+                  <span class="input-group-btn">
+                    <span class="badge" id="total-days">
+                      {% if keepdo.times > 1 %}
+                        {{keepdo.times}} days
+                      {% else %}
+                        {{keepdo.times}} day
+                      {% endif %}
+                    </span>
+                  </span>
+                  <input type="text" class="form-control" value="{{keepdo.task}}">
+                  <span class="input-group-btn" id="saved"></span>
+                  <span class="input-group-btn" id="delete"></span>
+                </div>
+              </li>
+              <li class="list-group-item" id="checked-days-list">
+
+                {% for i in range(test_days.thirty) %}
+                  <div class="grid" id="thirty-days"></div>
+                {% endfor %}
+
+                {% for i in range(test_days.seven) %}
+                  <div class="grid" id="seven-days"></div>
+                {% endfor %}
+
+                {% for i in range(test_days.one) %}
+                  <div class="grid" id="one-day"></div>
+                {% endfor %}
+
+              </li>
+              <li class="list-group-item" id="keepdo-info">
+                {{moment(keepdo.created_timestamp).format('ddd, MMM D, YYYY h:m A')}}
+                <br> {{moment(keepdo.created_timestamp).fromNow()}}
+              </li>
+            </ul>
+            {% endfor %}
+            <!-- KeepDo list content end -->
+
           </div>
           <!-- Panel body end  -->
 

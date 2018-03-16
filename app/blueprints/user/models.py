@@ -65,6 +65,7 @@ class KeepDoList(db.Model):
     times = db.Column(db.Integer, default=0)
     created_timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     last_check_point = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    daily_check_status = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     @classmethod

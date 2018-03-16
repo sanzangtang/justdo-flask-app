@@ -3,9 +3,9 @@ from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import login_required, current_user
 from app import db
 from app.blueprints.dashboard.forms import ToDoForm, KeepDoForm
-from app.blueprints.user.models import User, ToDoList
+from app.blueprints.user.models import User, ToDoList, KeepDoList
 from flask import session
-from flask import g
+from datetime import datetime
 
 bp_dashboard = Blueprint('bp_dashboard', __name__)
 
@@ -32,6 +32,13 @@ def pagination_builder(pag_obj, query, **kwargs):
     # update additional keyword arguments if any
     pag_args.update(kwargs)
     return pag_args
+
+
+def split_days(days):
+    return {'thirty': days // 30,
+            'seven': days % 30 // 7,
+            'one': days % 30 % 7
+            }
 
 
 @bp_dashboard.route('/', methods=['GET', 'POST'])
@@ -63,9 +70,13 @@ def dashboard():
     # those session keys will be used in generating templates
     if not 'todolist_collapse' in session:
         session['todolist_collapse'] = 'in'  # default expand todolist panel
-        session['keepdolist_collapse'] = 'in' # default expand keepdolist panel
+        # default expand keepdolist panel
+        session['keepdolist_collapse'] = 'in'
 
-    return render_template('dashboard.html', todo_args=todo_args, keepdo_args=keepdo_args)
+
+    test_days = split_days(47)
+
+    return render_template('dashboard.html', todo_args=todo_args, keepdo_args=keepdo_args, test_days=test_days)
 
 
 @bp_dashboard.route('/session', methods=['POST'])
@@ -90,7 +101,7 @@ def add_todo():
                             user_id=current_user.id)
             db.session.add(todo)
             db.session.commit()
-            flash('Your ToDo is alive', 'alert alert-success')
+            flash('Your ToDo is alive!', 'alert alert-success')
         else:
             # easy way to show errors after redirecting
             flash(todo_form.task.errors[0], 'alert alert-danger')
@@ -125,9 +136,21 @@ def update_todo():
         return 'Successfully updated.', 200
 
 
+# same codes copied from add_todo()
 @bp_dashboard.route('/add-keepdo', methods=['POST'])
 def add_keepdo():
-    return 'add keepdo'
+    if current_user.is_authenticated:
+        keepdo_form = KeepDoForm()
+        if keepdo_form.validate_on_submit():
+            keepdo = KeepDoList(task=keepdo_form.task.data,
+                                user_id=current_user.id)
+            db.session.add(keepdo)
+            db.session.commit()
+            flash('Your KeepDo is alive!', 'alert alert-success')
+        else:
+            # easy way to show errors after redirecting
+            flash(keepdo_form.task.errors[0], 'alert alert-danger')
+        return redirect(url_for('bp_dashboard.dashboard'))
 
 
 @bp_dashboard.route('/drop-keepdo', methods=['POST'])

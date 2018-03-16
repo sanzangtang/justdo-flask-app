@@ -1,5 +1,6 @@
 /*
 show delete button when focus on the input box
+for both todolist and keepdolist
 */
 $(".input-group .form-control").focus(function() {
   $('.input-group-btn#delete').hide();
@@ -11,6 +12,8 @@ call backend to delete the selected todo
 */
 $(".input-group-btn#delete").on('click', function() {
   var todo_id = $(this).parent().closest('div').attr('id').slice(4);
+  console.log(todo_id);
+  /*
   $.ajax({
     type: "POST",
     url: "/dashboard/drop-todo",
@@ -20,6 +23,7 @@ $(".input-group-btn#delete").on('click', function() {
     }
   });
   $(this).parent().closest('ul').html("").hide();
+  */
 });
 
 /*
@@ -125,4 +129,16 @@ $('#keepdolist-toggle').click(function(){
       keepdolist_collapse: keepdolist_collapse
     }
   })
+});
+
+/*
+daily check button
+*/
+$(".input-group-btn.daily-check").click(function() {
+  console.log($(this).parent().attr("id").slice(6));
+  var check_status = $(this).attr("id");
+  if (check_status == "check-unchecked") {
+    $(this).attr("id", "check-checked");
+    var keepdo_id = $(this).parent().attr("id").slice(6);
+  }
 });
