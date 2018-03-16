@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     # use Binary for postgres
     password_hash = db.Column(db.Binary())
     todolist = db.relationship('ToDoList', lazy='dynamic')
+    keepdolist = db.relationship('KeepDoList', lazy='dynamic')
 
     def set_password(self, plain_password):
         self.password_hash = bcrypt.generate_password_hash(plain_password)
@@ -53,3 +54,22 @@ class ToDoList(db.Model):
 
     def __repr__(self):
         return '<ToDoList {}>'.format(self.task)
+
+
+class KeepDoList(db.Model):
+
+    __tablename__ = 'keepdolist'
+
+    id = db.Column(db.Integer, primary_key=True)
+    task = db.Column(db.String(80))
+    times = db.Column(db.Integer, default=0)
+    created_timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    last_check_point = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    @classmethod
+    def find_by_id(cls, _id):
+        return cls.query.filter_by(id=_id).first()
+
+    def __repr__(self):
+        return '<KeepDoList {}>'.format(self.task)

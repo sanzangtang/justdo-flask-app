@@ -35,6 +35,10 @@
   margin-bottom: 0px;
 }
 
+.list-group#keepdo-form {
+  margin-bottom: 0px;
+}
+
 .list-group .list-group-item span {
   font-size: 0.9em;
   color: #607D8B;

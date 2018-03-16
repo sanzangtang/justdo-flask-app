@@ -8,3 +8,10 @@ class ToDoForm(FlaskForm):
                        Length(min=3, message='Do something.'),
                        Length(max=70, message='Uh-oh, try to keep it simple.')])
     submit = SubmitField('Do it')
+
+
+class KeepDoForm(FlaskForm):
+    task = StringField('Do Something', validators=[
+                       Length(min=3, message='Do something.'),
+                       Length(max=70, message='Uh-oh, try to keep it simple.')])
+    submit = SubmitField('Add')

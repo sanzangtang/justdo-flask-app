@@ -8,47 +8,50 @@
           <h3 class="panel-title">My To-Do List</h3>
           <nav aria-label="...">
             <ul class="pager">
-              <li id='page-info'>Page {{page}} of {{total_pages}}</li>
-              <li><a href="{{prev_url}}">
+              <li id='page-info'>Page {{todo_args.page}} of {{todo_args.total_pages}}</li>
+              <li><a href="{{todo_args.prev_url}}">
                 &laquo;
               </a></li>
-              <li><a href="{{next_url}}">
+              <li><a href="{{todo_args.next_url}}">
                 &raquo;
               </a></li>
               <li>
-                <a role="button" data-toggle="collapse" href="#todolist-collapse">-</a>
+                <a class="collapsed" role="button" data-toggle="collapse" href="#todolist-collapse" id="todolist-toggle">-</a>
               </li>
             </ul>
           </nav>
         </div>
+
         <!-- Panel collapse -->
-        <div id="todolist-collapse" class="panel-collapse collapse in">
+        <div id="todolist-collapse" class="panel-collapse collapse {{session.todolist_collapse}}">
           <!-- Panel body -->
           <div class="panel-body">
+
             <!-- ToDo add form -->
             <ul class="list-group" id="todo-form">
               <li class="list-group-item">
-                {% for error in form.task.errors %} {% if error %}
+                {% for error in todo_args.form.task.errors %} {% if error %}
                 <p class="help-block">{{error}}</p>
                 {% endif %} {% endfor %}
                 <div class="row">
                   <div class="col-xs-9 col-sm-10 col-md-10">
-                    <form class="" action="" method="post">
-                      {{form.hidden_tag()}}
+                    <form class="" action="{{url_for('bp_dashboard.add_todo')}}" method="post">
+                      {{todo_args.form.hidden_tag()}}
                       <div class="form-group">
-                        {{form.task(class="form-control", size=40)}}
+                        {{todo_args.form.task(class="form-control", size=40)}}
                       </div>
                   </div>
                   <div class="col-xs-3 col-sm-2 col-md-2" style="padding-left: 0px;">
-                    {{form.submit(class="btn btn-success", style="width:100%;")}}
+                    {{todo_args.form.submit(class="btn btn-success", style="width:100%;")}}
                   </div>
                   </form>
                 </div>
               </li>
             </ul>
+            <!-- ToDo form end -->
 
-            <!-- ToDo list -->
-            {% for todo in todolist %}
+            <!-- ToDo list content -->
+            {% for todo in todo_args.todolist %}
             <ul class="list-group">
               <li class="list-group-item">
                 <div class="input-group" id="todo{{todo.id}}">
@@ -71,6 +74,7 @@
               </li>
             </ul>
             {% endfor %}
+            <!-- ToDo list content end -->
 
           </div>
           <!-- Panel body end -->

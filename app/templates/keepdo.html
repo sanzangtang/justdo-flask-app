@@ -1,0 +1,60 @@
+<!-- any way to avoid duplicated html? -->
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12 col-md-8">
+      <!-- Panel div -->
+      <div class="panel panel-default">
+
+        <!-- Panel head -->
+        <div class="panel-heading">
+          <h3 class="panel-title">My Keep-Do List</h3>
+          <nav aria-label="...">
+            <ul class="pager">
+              <li id='page-info'>Page {{keepdo_args.page}} of {{keepdo_args.total_pages}}</li>
+              <li><a href="{{keepdo_args.prev_url}}">
+              &laquo;
+            </a></li>
+              <li><a href="{{keepdo_args.next_url}}">
+              &raquo;
+            </a></li>
+              <li>
+                <a role="button" data-toggle="collapse" href="#keepdolist-collapse" id="keepdolist-toggle">-</a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+
+        <!-- Panel collapse -->
+        <div id="keepdolist-collapse" class="panel-collapse collapse {{session.keepdolist_collapse}}">
+
+          <!-- Panel body -->
+          <div class="panel-body">
+            <ul class="list-group" id="keepdo-form">
+              <li class="list-group-item">
+                {% for error in keepdo_args.form.task.errors %} {% if error %}
+                <p class="help-block">{{error}}</p>
+                {% endif %} {% endfor %}
+                <div class="row">
+                  <div class="col-xs-9 col-sm-10 col-md-10">
+                    <form class="" action="{{url_for('bp_dashboard.add_keepdo')}}" method="post">
+                      {{keepdo_args.form.hidden_tag()}}
+                      <div class="form-group">
+                        {{keepdo_args.form.task(class="form-control", size=40)}}
+                      </div>
+                  </div>
+                  <div class="col-xs-3 col-sm-2 col-md-2" style="padding-left: 0px;">
+                    {{keepdo_args.form.submit(class="btn btn-success", style="width:100%;")}}
+                  </div>
+                  </form>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <!-- Panel body end  -->
+
+        </div>
+        <!-- Panel collapse end -->
+      </div>
+    </div>
+  </div>
+</div>

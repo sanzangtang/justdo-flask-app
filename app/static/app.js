@@ -1,10 +1,14 @@
-// show delete button when focus on input box
+/*
+show delete button when focus on the input box
+*/
 $(".input-group .form-control").focus(function() {
   $('.input-group-btn#delete').hide();
   $(this).next().next().html("<i class='fas fa-minus-circle' id='delete-todo'></i>").show();
 });
 
-// delete todo
+/*
+call backend to delete the selected todo
+*/
 $(".input-group-btn#delete").on('click', function() {
   var todo_id = $(this).parent().closest('div').attr('id').slice(4);
   $.ajax({
@@ -18,7 +22,9 @@ $(".input-group-btn#delete").on('click', function() {
   $(this).parent().closest('ul').html("").hide();
 });
 
-// handle checkbox state and send it to backend
+/*
+handle checkbox status and send it to the backend
+*/
 $('.todo-checkbox').click(function() {
   var todo_id = $(this).parent().closest('div').attr('id').slice(4);
   if (this.checked) {
@@ -48,7 +54,9 @@ $('.todo-checkbox').click(function() {
   }
 });
 
-// click outside of input box to update todo content
+/*
+click outside of the input box to update the todo content
+*/
 $(".input-group .form-control").on('input', function(){
   $('.input-group-btn#delete').hide();
 }).on('change', function(){
@@ -67,4 +75,54 @@ $(".input-group .form-control").on('input', function(){
   $(this).next().html('<i class="far fa-check-circle"></i>&ensp;Saved').fadeIn('slow', function(){
     $(this).delay(1000).fadeOut('slow');
   });
+});
+
+/*
+check the status of whether todolist panels are collapsed or not
+and send it to the backend
+*/
+$('#todolist-toggle').click(function(){
+  // since the status of collapse will update after clicking
+  // the logic here is reversed
+  var todolist_collapse = $('#todolist-collapse').attr("class");
+  if (todolist_collapse == "panel-collapse collapse in") {
+    // panel is collapsed
+    todolist_collapse = "";
+  } else {
+    // panel is expanded
+    todolist_collapse = "in";
+  }
+  $.ajax({
+    type: "POST",
+    url: "/dashboard/session",
+    dataType: "json",
+    data: {
+      todolist_collapse: todolist_collapse
+    }
+  })
+});
+
+/*
+check the status of whether keepdolist panels are collapsed or not
+and send it to the backend
+*/
+$('#keepdolist-toggle').click(function(){
+  // since the status of collapse will update after clicking
+  // the logic here is reversed
+  var keepdolist_collapse = $('#keepdolist-collapse').attr("class");
+  if (keepdolist_collapse == "panel-collapse collapse in") {
+    // panel is collapsed
+    keepdolist_collapse = "";
+  } else {
+    // panel is expanded
+    keepdolist_collapse = "in";
+  }
+  $.ajax({
+    type: "POST",
+    url: "/dashboard/session",
+    dataType: "json",
+    data: {
+      keepdolist_collapse: keepdolist_collapse
+    }
+  })
 });
