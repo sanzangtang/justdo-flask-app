@@ -5,6 +5,7 @@ from app import db
 from app.blueprints.dashboard.forms import ToDoForm, KeepDoForm
 from app.blueprints.user.models import User, ToDoList
 from flask import session
+from flask import g
 
 bp_dashboard = Blueprint('bp_dashboard', __name__)
 
@@ -90,7 +91,10 @@ def add_todo():
             db.session.add(todo)
             db.session.commit()
             flash('Your ToDo is alive', 'alert alert-success')
-            return redirect(url_for('bp_dashboard.dashboard'))
+        else:
+            # easy way to show errors after redirecting
+            flash(todo_form.task.errors[0], 'alert alert-danger')
+        return redirect(url_for('bp_dashboard.dashboard'))
 
 
 @bp_dashboard.route('/drop-todo', methods=['POST'])
