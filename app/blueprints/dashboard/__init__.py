@@ -1,10 +1,9 @@
 from flask import Blueprint
-from flask import render_template, redirect, url_for, flash, request, abort
+from flask import render_template, redirect, url_for, flash, request, abort, session, jsonify
 from flask_login import login_required, current_user
 from app import db
 from app.blueprints.dashboard.forms import ToDoForm, KeepDoForm
 from app.blueprints.user.models import User, ToDoList, KeepDoList
-from flask import session
 from datetime import datetime
 
 bp_dashboard = Blueprint('bp_dashboard', __name__)
@@ -34,13 +33,6 @@ def pagination_builder(pag_obj, query, **kwargs):
     return pag_args
 
 
-def split_days(days):
-    return {'thirty': days // 30,
-            'seven': days % 30 // 7,
-            'one': days % 30 % 7
-            }
-
-
 @bp_dashboard.route('/', methods=['GET', 'POST'])
 @login_required
 def dashboard():
@@ -59,11 +51,23 @@ def dashboard():
     todolist = user.todolist.order_by(ToDoList.status.desc(),
                                       ToDoList.timestamp.desc()
                                       ).paginate(todo_page, 8, False)
-    keepdolist = user.keepdolist.paginate(keepdo_page, 8, False)
+    keepdolist = user.keepdolist.order_by(KeepDoList.created_timestamp.desc()
+                                          ).paginate(keepdo_page, 8, False)
+
     todo_args = pagination_builder(
         todolist, 'todopage', form=todo_form, page=todo_page, todolist=todolist.items)
     keepdo_args = pagination_builder(
         keepdolist, 'keepdopage', form=keepdo_form, page=keepdo_page, keepdolist=keepdolist.items)
+
+    # modify keepdolist database everytime page is loaded
+    # may slow the performance
+    for keepdo in keepdolist.items:
+        days_interval = datetime.utcnow().day - keepdo.last_check_point.day
+        # if not checked for over 1 day
+        # change daily check status to False and commit to database
+        if days_interval > 0:
+            keepdo.daily_check_status = False
+            db.session.commit()
 
     # initialize session keys for the first time
     # will not run those lines afterwards
@@ -73,10 +77,7 @@ def dashboard():
         # default expand keepdolist panel
         session['keepdolist_collapse'] = 'in'
 
-
-    test_days = split_days(47)
-
-    return render_template('dashboard.html', todo_args=todo_args, keepdo_args=keepdo_args, test_days=test_days)
+    return render_template('dashboard.html', todo_args=todo_args, keepdo_args=keepdo_args)
 
 
 @bp_dashboard.route('/session', methods=['POST'])
@@ -150,6 +151,7 @@ def add_keepdo():
         else:
             # easy way to show errors after redirecting
             flash(keepdo_form.task.errors[0], 'alert alert-danger')
+        # refresh the dashboard page
         return redirect(url_for('bp_dashboard.dashboard'))
 
 
@@ -158,6 +160,22 @@ def drop_keepdo():
     return 'drop keepdo'
 
 
+# handle keepdo content update
 @bp_dashboard.route('/update-keepdo', methods=['POST'])
 def update_keepdo():
     return 'update keepdo'
+
+
+# handle daily check in
+@bp_dashboard.route('/checkin-keepdo', methods=['POST'])
+def checkin_keepdo():
+    keepdo_id = request.form['keepdo_id']
+    keepdo = KeepDoList.find_by_id(int(keepdo_id))
+
+    # update database
+    keepdo.daily_check_status = True
+    keepdo.last_check_point = datetime.utcnow()
+    keepdo.times = keepdo.times + 1
+    db.session.commit()
+
+    return jsonify({'success': True})  # send json response back to frontend

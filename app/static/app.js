@@ -9,6 +9,7 @@ $(".input-group .form-control").focus(function() {
 
 /*
 call backend to delete the selected todo
+handle both todo and keepdo
 */
 $(".input-group-btn#delete").on('click', function() {
   var todo_id = $(this).parent().closest('div').attr('id').slice(4);
@@ -128,17 +129,41 @@ $('#keepdolist-toggle').click(function(){
     data: {
       keepdolist_collapse: keepdolist_collapse
     }
-  })
+  });
 });
 
 /*
 daily check button
 */
 $(".input-group-btn.daily-check").click(function() {
-  console.log($(this).parent().attr("id").slice(6));
   var check_status = $(this).attr("id");
+  $(this).attr("id", "check-checked");
+  var keepdo_id = $(this).parent().attr("id").slice(6);
   if (check_status == "check-unchecked") {
-    $(this).attr("id", "check-checked");
-    var keepdo_id = $(this).parent().attr("id").slice(6);
+    $.ajax({
+      type: "POST",
+      url: "/dashboard/checkin-keepdo",
+      dataType: "json",
+      data: {
+        keepdo_id: keepdo_id
+      },
+      success: function(resp) {
+        location.reload();
+      }
+    });
+  } else {
+    // for testing purpose
+    $.ajax({
+      type: "POST",
+      url: "/dashboard/checkin-keepdo",
+      dataType: "json",
+      data: {
+        keepdo_id: keepdo_id
+      },
+      success: function(resp) {
+        location.reload();
+      }
+    });
   }
+  // location.reload();
 });

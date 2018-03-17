@@ -72,5 +72,12 @@ class KeepDoList(db.Model):
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
 
+    def split_days(self):
+        days = self.times
+        return {'thirty': days // 30,
+                'seven': days % 30 // 7,
+                'one': days % 30 % 7
+                }
+
     def __repr__(self):
         return '<KeepDoList {}>'.format(self.task)

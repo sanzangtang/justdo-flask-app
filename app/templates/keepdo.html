@@ -61,7 +61,11 @@
             <ul class="list-group">
               <li class="list-group-item">
                 <div class="input-group" id="keepdo{{keepdo.id}}">
-                  <span class="input-group-btn daily-check" id="check-unchecked">
+                  {% if keepdo.daily_check_status %}
+                    <span class="input-group-btn daily-check" id="check-checked">
+                  {% else %}
+                    <span class="input-group-btn daily-check" id="check-unchecked">
+                  {% endif %}
                     <i class="far fa-calendar-check"></i>
                   </span>
                   <span class="input-group-btn">
@@ -79,23 +83,22 @@
                 </div>
               </li>
               <li class="list-group-item" id="checked-days-list">
-
-                {% for i in range(test_days.thirty) %}
+                {% for i in range(keepdo.split_days()['thirty']) %}
                   <div class="grid" id="thirty-days"></div>
                 {% endfor %}
 
-                {% for i in range(test_days.seven) %}
+                {% for i in range(keepdo.split_days()['seven']) %}
                   <div class="grid" id="seven-days"></div>
                 {% endfor %}
 
-                {% for i in range(test_days.one) %}
+                {% for i in range(keepdo.split_days()['one']) %}
                   <div class="grid" id="one-day"></div>
                 {% endfor %}
-
               </li>
               <li class="list-group-item" id="keepdo-info">
-                {{moment(keepdo.created_timestamp).format('ddd, MMM D, YYYY h:m A')}}
+                {{moment(keepdo.created_timestamp).format('ddd, MMM D, YYYY h:m ss A')}}
                 <br> {{moment(keepdo.created_timestamp).fromNow()}}
+                <br>Last: {{moment(keepdo.last_check_point).format('ddd, MMM D, YYYY h:m ss A')}}
               </li>
             </ul>
             {% endfor %}
