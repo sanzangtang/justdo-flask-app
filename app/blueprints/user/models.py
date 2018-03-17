@@ -72,6 +72,7 @@ class KeepDoList(db.Model):
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
 
+    # split days for frontend rendering
     def split_days(self):
         days = self.times
         return {'thirty': days // 30,

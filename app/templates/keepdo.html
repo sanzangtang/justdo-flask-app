@@ -11,14 +11,20 @@
           <nav aria-label="...">
             <ul class="pager">
               <li id='page-info'>Page {{keepdo_args.page}} of {{keepdo_args.total_pages}}</li>
-              <li><a href="{{keepdo_args.prev_url}}">
-              &laquo;
-            </a></li>
-              <li><a href="{{keepdo_args.next_url}}">
-              &raquo;
-            </a></li>
+              <li class="{% if not keepdo_args.prev_url %}disabled{% endif %}">
+                <a href="{{keepdo_args.prev_url or '#'}}">
+                  <i class="fas fa-angle-left"></i>
+                </a>
+              </li>
+              <li class="{% if not keepdo_args.next_url %}disabled{% endif %}">
+                <a href="{{keepdo_args.next_url or '#'}}">
+                  <i class="fas fa-angle-right"></i>
+                </a>
+              </li>
               <li>
-                <a data-toggle="collapse" href="#keepdolist-collapse" id="keepdolist-toggle">-</a>
+              <a data-toggle="collapse" href="#keepdolist-collapse" id="keepdolist-toggle">
+                <i class="fas fa-caret-down"></i>
+              </a>
               </li>
             </ul>
           </nav>
@@ -49,9 +55,9 @@
               </li>
 
               <li class="list-group-item">
-                <div class="grid" id="one-day"></div>1 day
-                <div class="grid" id="seven-days"></div>7 days
-                <div class="grid" id="thirty-days"></div>30 days
+                <div class="grid" id="one-day"></div>&emsp;1 day&emsp;
+                <div class="grid" id="seven-days"></div>&emsp;7 days&emsp;
+                <div class="grid" id="thirty-days"></div>&emsp;30 days&emsp;
               </li>
             </ul>
             <!-- KeepDo form end -->
@@ -96,9 +102,8 @@
                 {% endfor %}
               </li>
               <li class="list-group-item" id="keepdo-info">
-                {{moment(keepdo.created_timestamp).format('ddd, MMM D, YYYY h:m ss A')}}
+                {{moment(keepdo.created_timestamp).format('ddd, MMM D, YYYY')}}
                 <br> {{moment(keepdo.created_timestamp).fromNow()}}
-                <br>Last: {{moment(keepdo.last_check_point).format('ddd, MMM D, YYYY h:m ss A')}}
               </li>
             </ul>
             {% endfor %}

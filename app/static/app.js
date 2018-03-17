@@ -165,5 +165,4 @@ $(".input-group-btn.daily-check").click(function() {
       }
     });
   }
-  // location.reload();
 });

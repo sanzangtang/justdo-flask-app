@@ -10,19 +10,19 @@ bp_dashboard = Blueprint('bp_dashboard', __name__)
 
 
 def pagination_builder(pag_obj, query, **kwargs):
-    next_page = pag_obj.next_num
-    prev_page = pag_obj.prev_num
+    next_page = pag_obj.next_num if pag_obj.has_next else None
+    prev_page = pag_obj.prev_num if pag_obj.has_prev else None
     total_pages = pag_obj.pages
+
+    # default total pages at least 1
     if total_pages == 0:
-        total_pages = 1  # default at 1 page
-    if prev_page is None:
-        prev_page = total_pages  # total number of pages
+        total_pages = 1
 
     # should change this hard coded url, but leave it for now
-    next_url = url_for('bp_dashboard.dashboard', **{query: next_page})
-    prev_url = url_for('bp_dashboard.dashboard', **{query: prev_page})
+    next_url = url_for('bp_dashboard.dashboard', **{query: next_page}) if next_page else None
+    prev_url = url_for('bp_dashboard.dashboard', **{query: prev_page}) if prev_page else None
 
-    # default
+    # default args
     pag_args = {'next_url': next_url,
                 'prev_url': prev_url,
                 'total_pages': total_pages
