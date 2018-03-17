@@ -59,8 +59,9 @@ def dashboard():
     keepdo_args = pagination_builder(
         keepdolist, 'keepdopage', form=keepdo_form, page=keepdo_page, keepdolist=keepdolist.items)
 
-    # modify keepdolist database everytime page is loaded
-    # may slow the performance
+    # IMPORTANT!
+    # not based on user's timezone, improve in the future
+    # modify keepdolist database everytime page is loaded, may slow the performance
     for keepdo in keepdolist.items:
         days_interval = datetime.utcnow().day - keepdo.last_check_point.day
         # if not checked for over 1 day
@@ -173,7 +174,14 @@ def drop_keepdo():
 # handle keepdo content update
 @bp_dashboard.route('/update-keepdo', methods=['POST'])
 def update_keepdo():
-    return 'update keepdo'
+    if current_user.is_authenticated:
+        keepdo_id = request.form['keepdo_id']
+        task = request.form['task']
+        keepdo = current_user.get_keepdo(keepdo_id)
+        keepdo.task = task
+        db.session.commit()
+        return jsonify({'success': True})
+    abort(403)
 
 
 # handle daily check in

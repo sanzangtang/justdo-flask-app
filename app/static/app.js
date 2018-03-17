@@ -40,7 +40,7 @@ $(".input-group-btn#delete").on('click', function() {
 });
 
 /*
-handle checkbox status and send it to the backend
+handle todo checkbox status and send it to the backend
 */
 $('.todo-checkbox').click(function() {
   var todo_id = $(this).parent().closest('div').attr('id').slice(4);
@@ -72,23 +72,38 @@ $('.todo-checkbox').click(function() {
 });
 
 /*
-click outside of the input box to update the todo content
+handle content update for both todo and keepdo
+click outside of the input box to save changes
 */
 $(".input-group .form-control").on('input', function(){
   $('.input-group-btn#delete').hide();
 }).on('change', function(){
-  var todo_id = $(this).parent().closest('div').attr('id').slice(4);
+  var id = $(this).parent().attr('id');
   var task = $(this).val();
-  $.ajax({
-    type: "POST",
-    url: "/dashboard/update-todo",
-    dataType: "json",
-    data: {
-      todo_id: todo_id,
-      task: task,
-      status: ""
-    }
-  });
+  if (id.indexOf('todo') !== -1) {
+    var todo_id = id.slice(4);
+    $.ajax({
+      type: "POST",
+      url: "/dashboard/update-todo",
+      dataType: "json",
+      data: {
+        todo_id: todo_id,
+        task: task,
+        status: ""
+      }
+    });
+  } else if (id.indexOf('keepdo') !== -1) {
+    var keepdo_id = id.slice(6);
+    $.ajax({
+      type: "POST",
+      url: "/dashboard/update-keepdo",
+      dataType: "json",
+      data: {
+        keepdo_id: keepdo_id,
+        task: task
+      }
+    });
+  }
   $(this).next().html('<i class="far fa-check-circle"></i>&ensp;Saved').fadeIn('slow', function(){
     $(this).delay(1000).fadeOut('slow');
   });

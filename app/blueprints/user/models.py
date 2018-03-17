@@ -35,11 +35,12 @@ class User(db.Model, UserMixin):
         return cls.query.filter_by(id=_id).first()
 
     # qurying todo and keepdo specific to user
+    # return http 404 if nothing found
     def get_todo(self, _id):
-        return self.todolist.filter_by(id=_id).first()
+        return self.todolist.filter_by(id=_id).first_or_404()
 
     def get_keepdo(self, _id):
-        return self.keepdolist.filter_by(id=_id).first()
+        return self.keepdolist.filter_by(id=_id).first_or_404()
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
