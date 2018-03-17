@@ -12,19 +12,31 @@ call backend to delete the selected todo
 handle both todo and keepdo
 */
 $(".input-group-btn#delete").on('click', function() {
-  var todo_id = $(this).parent().closest('div').attr('id').slice(4);
-  console.log(todo_id);
-  /*
-  $.ajax({
-    type: "POST",
-    url: "/dashboard/drop-todo",
-    dataType: "json",
-    data: {
-      todo_id: todo_id
-    }
-  });
+  var id = $(this).parent().attr('id');
+  if (id.indexOf('todo') !== -1) {
+    // delete todo
+    var todo_id = id.slice(4);
+    $.ajax({
+      type: "POST",
+      url: "/dashboard/drop-todo",
+      dataType: "json",
+      data: {
+        todo_id: todo_id
+      }
+    });
+  } else if (id.indexOf('keepdo') !== -1) {
+    // delete keepdo
+    var keepdo_id = id.slice(6);
+    $.ajax({
+      type: "POST",
+      url: "/dashboard/drop-keepdo",
+      dataType: "json",
+      data: {
+        keepdo_id: keepdo_id
+      }
+    });
+  }
   $(this).parent().closest('ul').html("").hide();
-  */
 });
 
 /*

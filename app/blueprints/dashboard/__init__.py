@@ -88,6 +88,7 @@ def session_manager():
             # Important: the variable name sent from frontend must be consistent with backend
             session[key] = request.form[key]
         return 'Session updated.', 200
+    abort(403)
 
 
 # since there are two forms on the same page
@@ -98,7 +99,6 @@ def add_todo():
         todo_form = ToDoForm()
         if todo_form.validate_on_submit():
             todo = ToDoList(task=todo_form.task.data,
-                            status='incomplete',
                             user_id=current_user.id)
             db.session.add(todo)
             db.session.commit()
@@ -107,16 +107,18 @@ def add_todo():
             # easy way to show errors after redirecting
             flash(todo_form.task.errors[0], 'alert alert-danger')
         return redirect(url_for('bp_dashboard.dashboard'))
+    abort(403)
 
 
 @bp_dashboard.route('/drop-todo', methods=['POST'])
 def drop_todo():
     if current_user.is_authenticated:
         todo_id = request.form['todo_id']
-        todo = ToDoList.find_by_id(int(todo_id))
+        todo = current_user.get_todo(todo_id)
         db.session.delete(todo)
         db.session.commit()
         return 'Successfully dropped.', 200
+    abort(403)
 
 
 @bp_dashboard.route('/update-todo', methods=['POST'])
@@ -128,13 +130,14 @@ def update_todo():
         status = request.form['status']
 
         # create a todo instance and update its data
-        todo = ToDoList.find_by_id(int(todo_id))
+        todo = current_user.get_todo(todo_id)
         if status != "":
             todo.status = status
         if task != "":
             todo.task = task
         db.session.commit()
         return 'Successfully updated.', 200
+    abort(403)
 
 
 # same codes copied from add_todo()
@@ -153,11 +156,18 @@ def add_keepdo():
             flash(keepdo_form.task.errors[0], 'alert alert-danger')
         # refresh the dashboard page
         return redirect(url_for('bp_dashboard.dashboard'))
+    abort(403)
 
 
 @bp_dashboard.route('/drop-keepdo', methods=['POST'])
 def drop_keepdo():
-    return 'drop keepdo'
+    if current_user.is_authenticated:
+        keepdo_id = request.form['keepdo_id']
+        keepdo = current_user.get_keepdo(keepdo_id)
+        db.session.delete(keepdo)
+        db.session.commit()
+        return jsonify({'success': True})
+    abort(403)
 
 
 # handle keepdo content update
@@ -169,13 +179,15 @@ def update_keepdo():
 # handle daily check in
 @bp_dashboard.route('/checkin-keepdo', methods=['POST'])
 def checkin_keepdo():
-    keepdo_id = request.form['keepdo_id']
-    keepdo = KeepDoList.find_by_id(int(keepdo_id))
+    if current_user.is_authenticated:
+        keepdo_id = request.form['keepdo_id']
+        keepdo = current_user.get_keepdo(keepdo_id)
 
-    # update database
-    keepdo.daily_check_status = True
-    keepdo.last_check_point = datetime.utcnow()
-    keepdo.times = keepdo.times + 1
-    db.session.commit()
+        # update database
+        keepdo.daily_check_status = True
+        keepdo.last_check_point = datetime.utcnow()
+        keepdo.times = keepdo.times + 1
+        db.session.commit()
 
-    return jsonify({'success': True})  # send json response back to frontend
+        return jsonify({'success': True})  # send json response back to frontend
+    abort(403)

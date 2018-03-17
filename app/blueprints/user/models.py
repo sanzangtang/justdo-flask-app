@@ -34,6 +34,13 @@ class User(db.Model, UserMixin):
     def find_by_id(cls, _id):
         return cls.query.filter_by(id=_id).first()
 
+    # qurying todo and keepdo specific to user
+    def get_todo(self, _id):
+        return self.todolist.filter_by(id=_id).first()
+
+    def get_keepdo(self, _id):
+        return self.keepdolist.filter_by(id=_id).first()
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -44,7 +51,7 @@ class ToDoList(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(80))
-    status = db.Column(db.String(80))
+    status = db.Column(db.String(80), default='incomplete')
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
