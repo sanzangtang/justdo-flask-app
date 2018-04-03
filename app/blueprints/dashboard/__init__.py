@@ -63,7 +63,7 @@ def dashboard():
     # not based on user's timezone, improve in the future
     # modify keepdolist database everytime page is loaded, may slow the performance
     for keepdo in keepdolist.items:
-        days_interval = datetime.utcnow().day - keepdo.last_check_point.day
+        days_interval = (datetime.utcnow() - keepdo.last_check_point).days
         # if not checked for over 1 day
         # change daily check status to False and commit to database
         if days_interval > 0:
